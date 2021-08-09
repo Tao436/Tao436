@@ -6,7 +6,7 @@ import requests
 import response
 
 date = time.strftime("%Y%m%d", time.localtime()) #获取当前格式化时间
-root = 'E:/用户目录/Desktop/TEST/'#定义工作目录
+root = 'C:/Users/tao/Desktop/TEST/'#定义工作目录
 print (root)
 date = root  + date#定义以格式化日期文件夹名称
 if not os.path.exists(date):#判断文件夹是否存在
@@ -17,9 +17,9 @@ sh_url = xlopen.sheet_by_name('urls')#在工作表内以名称搜索表单
 sh_bz = xlopen.sheet_by_name('bz')
 urlnrows = sh_url.nrows#获取表单内有效行数
 bznrows = sh_bz.nrows
-print("图片总数:",urlnrows)
+print("有效行数:",urlnrows)
 for i in range(bznrows):
-    bz = sh_bz.cell_value(i,0)#获取日期文件夹下级文件夹名称-标准号
+    bz = sh_bz.cell_value(i,1)#获取日期文件夹下级文件夹名称-标准号
     folderinbz = date + '/'+bz
     lifolderindl =list(('2D','3D','技术文档'))
     lifolderinyl =list(('1-渲染图','2-工程图','3-线框图','4-3D预览'))
@@ -36,20 +36,16 @@ yl_1 = str(folderinyl + lipicfolder[0])
 yl_2 = str(folderinyl + lipicfolder[1])
 yl_3 = str(folderinyl + lipicfolder[2])
 liyl = list((yl_1,yl_2,yl_3))
-#for p in pics:
-    #picstorlocation = (folderinbz+'/'+'预览附件'+'/'+ p +'/')
-    #print (picstorlocation)
-    #lipiclo = list.insert(picstorlocation)
-    #print (lipiclo)
+
 for u in range(urlnrows):
-    url = sh_url.cell_value(u,2)#获取图片url    
-    picname = sh_url.cell_value(u,0) +'.'+'jpg'#获取图片名称及定义后缀
-    #newpic = 'E:\用户目录\Desktop\TEST/'+picname
-    newpic = liyl[u%3]+ '/' +picname#定义图片完整路径
-    print (newpic)
-    req = requests.get(url)#获取url内容
-    with open (newpic,'wb')as code:
-        code.write(req.content)#保存图片
+    url = sh_url.cell_value(u,3)#获取图片url    
+    picname = sh_url.cell_value(u,1) +'.'+'jpg'#获取图片名称及定义后缀
+    if not url == '':
+        newpic = liyl[u%3]+ '/' +picname#定义图片完整路径
+        print ('正在下载第'+str(u+1)+'个图片')
+        req = requests.get(url)#获取url内容
+        with open (newpic,'wb')as code:
+            code.write(req.content)#保存图片
 print('下载完成')   
 
 
